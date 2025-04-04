@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Voici les instructions auxquelles il ne faut jamais déroger lorsque que tu code le projet à chaque étape"
+globs: 
+alwaysApply: true
+---
+# Project Instructions
+
+Use specification and guidelines as you build the app.
+
+Write the complete code for every step. Do not get lazy.
+
+Your goal is to completely finish whatever I ask for.
+
+You will see <ai_context> tags in the code. These are context tags that you should use to help you understand the codebase.

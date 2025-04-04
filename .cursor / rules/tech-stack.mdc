@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Voici la tech stack de mon projet, il n'y aura rien en plus mis a part les API et bot Slack"
+globs: 
+alwaysApply: true
+---
+## Tech Stack
+
+- Backend: Postgres, Supabase, Drizzle ORM, Server Actions
+- Deployment: Vercel

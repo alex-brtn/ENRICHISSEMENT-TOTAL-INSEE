@@ -1,0 +1,57 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Voici l'architecture du projet, je veux que tu te fis à cela tout a long du développement du bot"
+globs: 
+alwaysApply: true
+---
+
+/
+├── api/
+│   └── webhook/
+│       └── route.ts                      # Webhook Typeform receiver
+
+├── actions/
+│   ├── db/
+│   │   ├── companies-actions.ts          # Insert/update company
+│   │   ├── matched-aids-actions.ts       # Match results from API
+│   │   ├── aide-scores-actions.ts        # Claude AI scoring results
+│   │   └── grants-actions.ts             # CSV import or update from source
+│   ├── enrich-company-action.ts          # INSEE enrichment
+│   ├── fetch-matching-aids-action.ts     # Fetch ID list from les-aides.fr
+│   ├── match-with-ai-action.ts           # Claude AI matching logic
+│   └── send-slack-notification.ts        # Slack formatting + send
+
+├── db/
+│   ├── schema/
+│   │   ├── companies-schema.ts           # All company data (Typeform + INSEE)
+│   │   ├── grants-schema.ts              # Master list of all aids (CSV/API)
+│   │   ├── matched-aids-schema.ts        # Link: companies ↔ grants
+│   │   ├── aide-scores-schema.ts         # Claude AI results (score, reason, missing_info)
+│   ├── db.ts
+│   └── schema/index.ts
+
+├── lib/
+│   ├── insee.ts                          # INSEE API client
+│   ├── les-aides.ts                      # les-aides.fr API client
+│   ├── claude.ts                         # Claude AI interface
+│   └── slack.ts                          # Slack webhook sender
+
+├── crons/
+│   └── import-grants.ts                  # Daily job: update grants table
+
+├── utils/
+│   ├── formatters.ts
+│   └── validators.ts
+
+├── types/
+│   ├── index.ts
+│   ├── company-types.ts
+│   ├── matched-aids-types.ts
+│   ├── aide-scores-types.ts
+│   └── grants-types.ts
+
+└── .env.example

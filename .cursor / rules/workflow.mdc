@@ -1,0 +1,48 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Voici le workflow que je souhaite adapté, il va fallois que tu le suive de A à Z dans le développement du bot"
+globs: 
+alwaysApply: true
+---
+
+## Workflow
+1. Entrée et Validation
+   - Prospect remplit Typeform
+   - Validation immédiate des données
+   - Détection des doublons
+   - Vérification SIRET
+
+2. Enrichissement (une fois les données typeform reçues sur la table 'companies' dans supabase)
+   - Appel API INSEE
+   - Récupération codes NAF et des autres colonnes comme défini dans [tables-companies.mdc](mdc:.cursor/rules/tables-companies.mdc)
+   - Mise en cache des données fréquentes
+
+3. Matching Initial
+   - Pré-scoring basé sur règles simples
+   - Appel API les-aides.fr
+   - Filtrage préliminaire des aides
+
+4. Analyse IA
+   - Claude AI analyse détaillée
+   - Scoring pondéré
+   - Vérification des critères spécifiques
+
+5. Post-Processing
+   - Agrégation des scores
+   - Validation des critères obligatoires
+   - Classification finale
+
+6. Communication
+   - Message Slack détaillé via Bot Slack
+   - ✅ Aides recommandées (score > 85)
+   - 🟡 Aides potentielles (score 70-85)
+   - ⚠️ Aides à vérifier (score < 70)
+
+7. Suivi
+   - Enregistrement des interactions
+   - Collecte du feedback
+   - Mise à jour du modèle

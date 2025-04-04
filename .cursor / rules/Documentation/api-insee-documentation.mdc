@@ -1,0 +1,62 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Utiliser ce document à chaque fois qu'il y a besoin d'informations sur l'utilisation de l'API de l'INSEE."
+globs: 
+alwaysApply: true
+---
+Connexion à l'API Sirene - Mode d'emploi
+L'URL d’appel à l’API est "https://api.insee.fr/api-sirene/3.11".
+
+Pour pouvoir interroger l'API la première fois, il faut d'abord procéder aux étapes suivantes :
+
+Se connecter au portail en mode “Connexion pour les externes”.
+
+Se créer un compte ou utiliser son ancien compte du portail "https://api.insee.fr/catalogue/". Les caractères accentués sont à éviter car mal gérés par le portail.
+
+Créer une application :
+
+Lui donner un nom et une description (obligatoire)
+Un domaine utilisé par l’application conseillé
+Choisir le mode de création “simple” (et non "backend to backend" qui ne fonctionnera en aucun cas)
+Renseigner le type d’applicatif - laisser vide le client ID
+Laisser vide le champ "souscription"
+Puis “créer application” sur récapitulatif
+Souscription via l’application :
+
+Aller sur “Catalogue”, puis “Applicatif”, puis “API Sirene”.
+Puis “Souscrire”.
+Choisir le plan “Public” (le seul disponible)
+Puis “Suivant”
+Et sélectionner l’application créé plus tôt.
+“Suivant”
+La souscription est validée.
+Une clé (API KEY) est alors fournie pour se connecter à l’API en mode public.
+
+La clé d’API pour se connecter :
+
+Pour retrouver la clé, on peut se connecter à son application.
+Puis onglet “souscriptions”.
+Puis choisir la souscription à l’API Sirene.
+La clé d’API apparaît à droite.
+On peut la renouveler ou la révoquer. Elle n’a pas de durée limite.
+
+Usage de la clé d'API pour requêter l'API Sirene:
+Écriture d'un requête
+
+La clé d’api se transmet dans le header de la requête dans le champ X-INSEE-Api-Key-Integration.
+
+Exemple de commande curl :
+
+curl --location 'https://api.insee.fr/api-sirene/3.11/siren/309634954' --header 'X-INSEE-Api-Key-Integration: xxxxxxx'
+Utilisation du swagger
+
+Cliquer sur le bouton "Authorize"
+Renseigner la clé d'API dans le champ "Value"
+Cliquer sur "Authorize" puis "Close"
+Cliquer sur "Try it out" dans le service choisi
+Renseigner votre requête
+Cliquer sur "Execute"

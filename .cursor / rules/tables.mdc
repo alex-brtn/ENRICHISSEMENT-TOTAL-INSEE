@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Lorsque que tu vas construire les tables sur supabase, tu reprendras ce qu'il y a ici"
+globs: 
+alwaysApply: true
+---
+
+## Tables
+
+- `companies` — all answers from Typeform + INSEE data
+- `grants` — master aid list (updated daily via cron or script)
+- `matched_aids` — raw result of les-aides.fr match (only IDs)
+- `aide_scores` — Claude AI score, reason, missing_info per match

@@ -1,0 +1,81 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 🧾 Table: `companies`
+
+Ce fichier documente la structure de la table `companies`, qui centralise les données collectées via Typeform et enrichies automatiquement via l’API INSEE. Elle est la table centrale du projet.
+
+---
+
+## 🔄 Flux des données
+
+- ✅ Remplissage initial via **Typeform**
+- 🔁 Enrichissement automatique dès qu’un `siret` est inséré
+- Utilisée pour le **matching** avec les aides publiques
+
+---
+
+## 📥 Champs Typeform
+
+| Colonne                    | Type SQL  | Ref Typeform                                      | Question posée                                                       |
+|----------------------------|-----------|---------------------------------------------------|----------------------------------------------------------------------|
+| `siret`                   | `text`    | `b685a36a-007f-499f-a41c-52b31fdfad23`            | Quel est votre numéro SIRET ?                                       |
+| `nombre_employes`         | `int`     | `322cbef8-70d7-404a-b074-abca79c502df`            | Combien de salariés compte votre entreprise ?                       |
+| `description_projet`      | `text`    | `0970c8a7-d73a-4a25-8de3-d9536ec8f8bd`            | Décrivez votre projet et ses objectifs                              |
+| `chiffre_affaires`        | `numeric` | `2110cecf-101a-4e87-914b-d7916ed0c3e7`            | Quel est votre chiffre d'affaires annuel ?                          |
+| `tresorerie`              | `numeric` | `e5972a6b-0443-4351-a0c1-31f045395ee7`            | Quel est votre niveau de trésorerie ?                               |
+| `niveau_dette`            | `numeric` | `60fc2c79-df98-4a2c-a2d8-bbf58f4e3233`            | Quel est votre niveau de dette ?                                    |
+| `nouveau_credit`          | `boolean` | `7e93a6d5-d5a9-4534-805f-c2fcd69e0b35`            | Avez-vous prévu de contracter un crédit ?                           |
+| `montant_credit`          | `numeric` | `9d720fc0-fe21-4a22-8858-ae7cd8f82064`            | Quel montant de crédit envisagez-vous ?                             |
+| `montant_levee_fonds`     | `numeric` | `16a40cb9-5e92-4779-abff-e7fbc48d8819`            | Quel est le montant de votre levée de fonds ?                       |
+| `types_projet`            | `text[]`  | `9742385a-511c-47a8-aeeb-105359b9263c`            | Votre projet inclut-il les éléments suivants ?                      |
+| `nature_innovation`       | `text`    | `d46c281a-8e69-478b-ab0a-c88d56a07d6c`            | Nature de votre innovation ou techno ?                              |
+| `montant_projet`          | `text`    | `fe98e8dd-3607-4c01-82b2-c00e73dee0af`            | Budget estimé du projet                                             |
+| `subventions_recues`      | `boolean` | `a776199c-12a9-4be4-bfc1-648dad658ac1`            | Avez-vous déjà reçu des subventions ?                               |
+| `details_subventions`     | `text`    | `d35524dd-2d6d-485b-8240-de422137c9a0`            | Détail des subventions / aides obtenues                             |
+| `dirigeant_femme`         | `boolean` | `028f8a56-c580-4306-b571-60ceb7802572`            | Entreprise dirigée par une femme ?                                  |
+| `femme_majoritaire`       | `boolean` | `62838151-a516-461f-a6a5-274884307edf`            | Majoritairement détenue par une femme ?                             |
+| `embauche_handicap`       | `boolean` | `6acb4458-ddc3-44b2-bb4f-c706c66c3294`            | Embauche de personnes handicapées ?                                 |
+| `embauche_jeunes`         | `boolean` | `469cdd03-d44a-476d-9375-1d1e57bf26af`            | Embauche de jeunes < 26 ans ?                                       |
+| `embauche_seniors`        | `boolean` | `4c8cc15e-e078-46af-b8a9-b7f30552c156`            | Embauche de seniors > 50 ans ?                                      |
+| `delai_projet`            | `text`    | `124e3860-f9ec-4b71-9dac-5aef80744f06`            | Urgence du besoin en financement ?                                  |
+| `impact_social`           | `text`    | `3c115d4e-ae9c-4e18-86fe-e83b940c5bc8`            | Impact social ?                                                     |
+| `impact_environnemental`  | `text`    | `85ea5eee-b71f-4cf7-8af6-ec86e0391679`            | Dimension environnementale ?                                       |
+| `site_web`                | `text`    | `75304101-1b0b-475f-87e3-03b2b91bd160`            | Site internet                                                       |
+| `prenom`                  | `text`    | `a9a11c61-18df-456a-b639-c22750997db0`            | Prénom                                                              |
+| `nom`                     | `text`    | `989d953f-9dd0-4ec0-a5f5-cf3627f7aaf5`            | Nom                                                                 |
+| `telephone`               | `text`    | `e404c3fd-1694-4426-a7fe-8439b006b58b`            | Téléphone                                                           |
+| `email`                   | `text`    | `dd350bca-58cd-451d-bbe6-4d4ac69ff862`            | Email                                                               |
+
+---
+
+## 🧠 Champs enrichis via l’API INSEE
+
+| Colonne                     | Type SQL   | Description                            |
+|-----------------------------|------------|----------------------------------------|
+| `denomination_complete`    | `text`     | Nom complet de l’entreprise            |
+| `sigle`                    | `text`     | Sigle de l’entreprise (si dispo)       |
+| `raison_sociale`           | `text`     | Raison sociale                         |
+| `adresse_complete`         | `text`     | Adresse complète                       |
+| `etablissement_siege`      | `boolean`  | Est-ce le siège ?                      |
+| `etat_administratif`       | `text`     | Actif, fermé, etc.                     |
+| `forme_juridique`          | `text`     | Type de structure                      |
+| `code_forme_juridique`     | `text`     | Code forme juridique                   |
+| `date_creation`            | `date`     | Date de création                       |
+| `tranche_effectif`         | `text`     | Tranche d’effectifs                    |
+| `code_tranche_effectif`    | `text`     | Code effectif                          |
+| `code_postal`              | `text`     | Code postal                            |
+| `commune`                  | `text`     | Commune                                |
+| `code_commune`             | `text`     | Code commune                           |
+| `departement`              | `text`     | Département                            |
+| `code_departement`         | `text`     | Code INSEE du département              |
+| `region`                   | `text`     | Nom de la région                       |
+| `code_region`              | `text`     | Code INSEE de la région                |
+| `code_ape`                 | `text`     | Code APE (activité principale)         |
+| `libelle_ape`              | `text`     | Libellé APE                            |
+
+---
+
+Si tu veux le schema Drizzle en `.ts` basé sur ce doc `.mdc`, je peux te le générer immédiatement.

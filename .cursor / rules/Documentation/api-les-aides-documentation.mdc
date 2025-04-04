@@ -1,0 +1,670 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: "Utiliser ce document à chaque fois qu'il y a besoin d'informations sur l'utilisation de l'API les-aides.fr."
+globs: 
+alwaysApply: true
+---
+
+Les aides entreprises API
+
+1.1 Méthode d'accès
+Les appels utilisent le protocole HTTP ou HTTPS, en utilisant la méthode POST ou GET.
+Exemple 1 (méthode GET) :
+GET /aides/?domaine=790&ape=6201Z&departement=80 HTTP/1.0
+Host: api.les-aides.fr
+Accept: application/json
+Accept-Encoding: gzip
+Authorization: Basic 0123456789abcdABCD
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:41.0) API les-aides.fr
+
+Exemple 2 (méthode POST) :
+POST /aides/ HTTP/1.0
+Host: api.les-aides.fr
+Accept: application/json
+Accept-Encoding: gzip
+X-IDC: 0123456789abcd0123456789abcd
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:41.0) API les-aides.fr
+Content-Length: 36
+
+domaine=790&ape=6201Z&departement=80
+
+1.2 Configuration de l'entête HTTP
+Champ "Accept"
+(obligatoire)
+Indique le format de contenu souhaité. Les valeurs possibles sont :
+application/json (ou text/json) : Objet de type JavaScript Object Notation. C'est le format par défaut pour tous les retours.
+application/javascript (ou text/javascript) : Retour JSONP, avec une fonction de callback.
+application/csv (ou text/csv) :Format CSV, pour les tables ou les listes.
+text/plain : Texte brut, pour les listes ou certains textes.
+text/html : Affichage au format HTML, si applicable.
+Quand la modification de l'entête HTTP n'est pas possible, il est possible d'include le champ format dans les paramètres de la requête. Par exemple dans un navigateur :
+https://api.les-aides.fr/liste/communes/?departement=80&format=csv
+
+Dans ce cas les valeurs possibles sont json, jsonp, html, text ou csv.
+Champ "Accept-Encoding"
+(souhaitable)
+Spécifie le type de compression utilisable pour la réponse. Ce paramètre est optionnel.
+gzip : Compression GZIP.
+deflate : Compression Deflate.
+Champ "Authorization" ou "X-IDC"
+(obligatoire)
+Ces champs sont utilisés pour identifier l'utilisateur de l'API.
+Format du Champ Authorization :
+Authorization: Basic 0123456789abcdABCD
+où "0123456789abcdABCD" est l'encodage en base64 de la chaine "nom_utilisateur:mot_de_passe"
+Le nom d'utilisateur (adresse email) et le mot de passe sont ceux utilisés pour accéder au site les-aides.fr en tant que membre.
+Format du Champ X-IDC :
+X-IDC: 0123456789abcdef0123456789abcdef
+où "0123456789abcdef0123456789abcdef" est une clef que vous trouverez dans les paramètres de votre compte
+Quand l'ajout des login/mot de passe ou la modification de l'entête HTTP n'est pas possible ou non souhaitable, il est possible d'include le champ idc dans les paramètres de la requête.
+Par exemple en JSONP :
+<script type="text/javascript"
+src="https://api.les-aides.fr/liste/filieres/?idc=0123456789abcdef0123456789abcdef&format=jsonp&callback=listeFilieres">
+</script>
+
+1.3 Paramètres d'appel communs
+Authentification
+Dans l'entête HTTP
+Authentification classique HTTP :
+GET /liste/filieres/ HTTP/1.0
+Host: api.les-aides.fr
+Authorization: Basic 0123456789abcdABCD
+...
+
+Variable HTTP X-IDC :
+GET /liste/filieres/ HTTP/1.0
+Host: api.les-aides.fr
+X-IDC: 0123456789abcd0123456789abcd
+...
+
+Variable GET ou POST
+On peut ajouter la variable idc au paramètres de la requête HTTP :
+GET /liste/filieres/?idc=0123456789abcd0123456789abcd HTTP/1.0
+Host: api.les-aides.fr
+...
+
+Format de la réponse
+Classiquement, le format souhaité est à spécifier dans l'entête HTTP avec la variable Accept.
+GET /liste/filieres/ HTTP/1.0
+Host: api.les-aides.fr
+X-IDC: 0123456789abcd0123456789abcd
+Accept: application/json
+...
+
+Valeurs possibles :
+application/json : JSON
+application/javascript: JSONP (avec une fonction de callback)
+application/csv ou text/csv : CSV
+text/plain : texte brut (valeurs séparées par une tabulation)
+text/html : Affichage au format HTML
+Dans le cas où l'entête HTTP ne peut être modifiée, il est possible de spécifier le format à l'aide de la variable format qui sera prioritaire.
+GET /liste/filieres/?format=jsonp&callback=listeFiliere HTTP/1.0
+Host: api.les-aides.fr
+X-IDC: 0123456789abcd0123456789abcd
+Accept: text/html
+...
+
+Valeurs possibles :
+json : JSON
+jsonp: JSONP (avec une fonction de callback passée en argument dans la variable callback)
+csv : CSV
+text : texte brut (valeurs séparées par une tabulation)
+html : Affichage au format HTML
+Format JSONP
+Pour l'utilisation en JSONP, le paramètre callback doit être passé en plus. Il s'agit du nom de la fonction de callback à insérer dans la réponse.
+L'authentification doit être passée avec le paramètre idc (elle ne peut être communiquée autrement).
+Le format doit être spécifié avec le paramètre format.
+Exemple :
+<script type="text/javascript"
+src="https://api.les-aides.fr/liste/moyens/?idc=0123456789abcdef0123456789abcdef&format=jsonp&callback=listeMoyens">
+</script>
+
+Le résultat sera :
+listeMoyens([
+  {"numero":13,"libelle":"Moyens financiers"},
+  {"numero":15,"libelle":"Allègement des charges sociales et fiscales"},
+  {"numero":14,"libelle":"Prestations sp\u00e9cialis\u00e9es"},
+  {"numero":563,"libelle":"Fourniture de moyens et d'informations"}
+]);
+
+1.4 Réponses HTTP
+Les retours sont nativement au format JSON, mais peuvent être demandés aux formats JSONP, HTML, texte ou CSV en fonction du contenu.
+HTTP/1.1 200 OK
+Date: Mon, 01 Nov 2015 17:50:22 GMT
+Content-Encoding: gzip
+Content-Length: 20352
+Content-Type: application/json; charset=UTF-8
+
+{"idr":3951541,"depassement":false,"nb_dispositifs":99,"dispositifs":...
+
+Code HTTP 401
+Dans le cas où le champ Authorization ou le champ X-IDC ne sont pas fournis,le serveur renverra un code HTTP 401, une demande d'authentification.
+Code HTTP 403
+Ce code est renvoyé avec en cas d'erreur d'appel du service. Un objet JSON est fourni avec cette erreur pour expliquer la nature de l'exception.
+HTTP/1.0 403 Exception
+Date: Mon, 01 Nov 2015 18:13:33 GMT
+Content-Length: 132
+Connection: close
+Content-Type: application/json
+
+{"exception":"L'APE n'existe pas ou est mal param\u00e9tr\u00e9e","api":"\/aides",
+"field":"ape","args":{"domaine":790,"ape":"ZZZZ"}}
+
+exception : Message
+api : API appelée
+field : Champ qui provoque l'exception
+args : Arguments passés à l'API
+Code HTTP 404
+Ce code est renvoyé quand l'appel au service ne peut renvoyer de contenu. Par exemple une liste qui n'existe pas.
+Code HTTP 302
+Ce code est renvoyé quand l'appel au service demande une page au format HTML qui existe sur le site les-aides.fr.
+Dans ce cas, le champ Location de l'entête de réponse HTTP contient l'URL du contenu HTML.
+1.5 Restriction d'accès
+La volumétrie quotidienne de requêtes ou de chargements de fiches de l'API est limitée à 720 accès.
+Au delà de ce volume, l'utilisateur doit se mettre en contact avec l'équipe en charge du site, pour convenir ensemble d'une convention d'utilisation liée à ce besoin (les-aides.fr@amiens-picardie.cci.fr).
+
+2. Recherche d'aides
+https://api.les-aides.fr/aides/
+Recherche de dispositifs d'aide.
+2.1 Critères de recherche
+Recherche pour une entreprise connue et active
+Critères obligatoires
+Critères optionnels
+Reprise d'une recherche déjà effectuée, variable "requete"
+2.2 Résultat de recherche
+Succès
+Echec
+2.1 Critères de recherche
+Recherche pour une entreprise connue et active
+Si le SIRET de l'entreprise est connu, il peut être utilisé en lieu et place des champs ape, departement et commune.
+Cette recherche a en outre l'intérêt de prendre en compte aussi la date de création de l'entreprise, sa forme juridique et son effectif.
+https://api.les-aides.fr/aides/?siret=12345678901234&domaine=798
+
+On peut aussi utiliser le SIREN, dans ce cas c'est le siège social de l'entreprise qui sera utilisé pour la recherche.
+https://api.les-aides.fr/aides/?siren=123456789&domaine=798
+
+Critères obligatoires
+Variable "ape" : Activité de l'entreprise.
+N'importe quel code des 5 niveaux de la NAF peut être utilisé.
+Le premier niveau (A, B, C, ...) peut être utilisé pour une recherche sur des plages larges d'activités.
+Si l'APE de l'entreprise est connu, il est préférable de l'utiliser pour avoir plus de précision dans la recherche.
+https://api.les-aides.fr/aides/?ape=6201Z&domaine=798
+
+On peut aussi utiliser le critère siret en lieu et place de l'APE.
+Variable "domaine" : Domaine d'application des aides recherchées
+La valeur à utiliser se trouve dans la liste des domaines d'application.
+https://api.les-aides.fr/aides/?ape=J&domaine=798
+
+Il est possible de faire une recherche sur plusieurs domaines, dans ce cas il faut transmettre un tableau de valeurs.
+https://api.les-aides.fr/aides/?ape=J&domaine=[790,793]
+
+https://api.les-aides.fr/aides/?ape=J&domaine[]=790&domaine[]=793
+
+Critères optionnels
+Variable "siret" : Code SIRET de l'entreprise (code établissement)
+Si le code SIRET de l'établissement est fourni, l'API interrogera les services de l'Etat pour connaître l'APE, la localisation de l'établissement, la date de création de l'entreprise, sa forme juridique et son effectif pour obtenir une recherche plus précise.
+Il n'est pas nécessaire de fournir le code APE si le champ siret est renseigné.
+Variable "siren" : Code SIREN de l'entreprise
+Si le code SIREN de l'entreprise est fourni, l'API interrogera les services de l'Etat pour connaître le SIRET du siège social, sa localisation, l'APE, la date de création de l'entreprise, sa forme juridique et son effectif pour obtenir une recherche plus précise.
+Il n'est pas nécessaire de fournir le code APE si le champ siren est renseigné.
+Variable "moyen" : Moyen d'intervention des aides recherchées
+La valeur à utiliser se trouve dans la liste des moyens d'intervention.
+https://api.les-aides.fr/aides/?ape=J&domaine=798&moyen=833
+
+Il est possible de faire une recherche sur plusieurs moyens, dans ce cas il faut transmettre un tableau de valeurs.
+https://api.les-aides.fr/aides/?ape=J&domaine=798&moyen=[827,833]
+
+https://api.les-aides.fr/aides/?ape=J&domaine=798&moyen[]=827&moyen[]=833
+
+Variable "filiere" : Filière marché de l'entreprise
+La valeur à utiliser se trouve dans la liste des filières marché.
+https://api.les-aides.fr/aides/?ape=J&domaine=798&filiere=337
+
+Variables "region", "departement" et "commune" : Localisation de l'entreprise
+Les valeurs à utiliser se trouvent dans les listes des régions, des départements et des communes.
+https://api.les-aides.fr/aides/?ape=J&domaine=798&region=22
+
+https://api.les-aides.fr/aides/?ape=J&domaine=798&departement=80&commune=21
+
+Reprise d'une recherche déjà effectuée, variable "requete"
+Si une recherche a déjà été effectuée avec succès, un identifiant de requête (idr) a été envoyé dans la réponse.
+Il est possible d'utiliser ce numéro pour ré-utiliser ou rafraîchir cette recherche.
+https://api.les-aides.fr/aides/?requete=123456
+
+Il est aussi possible de modifier les critères de la recherche, par exemple pour l'affiner.
+https://api.les-aides.fr/aides/?requete=123456&filiere=337
+
+2.2 Résultat de recherche
+Succès
+En cas de succès, voici l'objet qui est renvoyé :
+Objet "resultat"
+idr : (integer) Identifiant de requête, est utilisé pour reprendre, modifier ou rafraîchir la recherche.
+depassement : (boolean) Normalement false, est true si la recherche renvoie un nombre trop important (plus de 200) de dispositifs. Il est alors nécessaire d'affiner les critères de recherche.
+nb_dispositfs : (integer) Nombre de dispositifs renvoyés par la recherche.
+date : (string) Date et heure de la recherche
+dispositifs : (tableau d'objets "dispositif") Liste des dispositifs renvoyés
+etablissement : (objet "etablissement", optionnel) Définition de l'établissement (SIRET) utilisé pour la recherche
+localisation : (objet "region", "departement" ou "commune", optionnel) Définition de la localisation utilisée pour la recherche
+Objet "dispositif"
+numero : (integer) Identifiant de dispositifs. Est utilisé pour charger la fiche descriptive complète du dispositif
+nom : (string) Nom du dispositif d'aide
+sigle : (string) Sigle de l'organisme qui propose le dispositif
+revision : (double) Numéro de révision interne Sémaphore
+generation : (string) Date de création de la fiche dans Sémaphore
+validation : (string) Date de dernière validation du dispositif dans Sémaphore
+nouveau : (boolean) Vrai si le dispositif est récent
+implantation : (string) "E": Dispositif Européen, "N": Dispositif National, "T": Dispositif Territorial
+uri : (string) Lien URL vers la fiche du dispositif dans les-aides.fr
+aps : (boolean) Indique si le dispositif s'inscrit dans le projet des Aides Publiques Simplifiées
+domaines : (tableau d'integer) Liste des identifiants des domaines d'application du dispositif d'aide
+moyens : (tableau d'integer) Liste des identifiants des moyens d'intervention du dispositif d'aide
+resume : (string) Résumé de la fiche descriptive
+Objet "etablissement"
+siret : (string) Code SIRET de l'établissement
+raison_sociale : (string) Raison sociale de l'entreprise
+siege_social : (boolean) Indique si l'établissement est le siège social de l'entreprise
+adresse : (string) Adresse postale de l'établissement
+code_postal : (string) Code postal de l'établissement
+commune : (objet "commune") Commune d'implantation de l'établissement
+ape : (objet) APE de l'entreprise
+code : (string) Code NAF INSEE
+libelle : (string) Libellé de l'activité
+date_creation : (string) Date de création de l'entreprise
+forme_juridique : (objet) Forme juridique de l'entreprise
+numero : (integer) Identifiant INSEE de la forme juridique
+libelle : (string) Libellé de la forme juridique
+tranche_effectif : (objet) Effectif de l'entreprise
+numero : (integer) Identifiant INSEE de la tranche d'effectif
+libelle : (string) Libellé de la tranche d'effectif
+active : (boolean) Indique si l'établissement est actif
+Objet "region"
+region : (integer) Identifiant de la région
+nom : (string) Nom de la région
+Objet "departement"
+departement : (string) Identifiant du département
+nom : (string) Nom du département
+Objet "commune"
+departement : (string) Identifiant du département
+commune : (integer) Identifiant de la commune
+article : (string) Article précédant le nom de la commune
+nom : (string) Nom de la commune
+comment : (string) Informations complémentaires sur la commune (en HTML)
+Echec
+En cas d'échec de la recherche, le serveur renvoie un code HTTP 403, et un objet JSON de ce type :
+exception : (string) Description de l'exception
+api : (string) API qui a provoqué l'exception
+action : (string) Action qui a provoqué l'exception (optionnel)
+field : (string) Champ qui a provoqué l'exception (optionnel)
+args : (objet) Arguments passés à l'API
+Exemple :
+{
+  "exception": "APE ou SIRET manquant",
+  "api": "/aides",
+  "action": "new",
+  "args": {
+    "domaine": 798,
+    "departement": "80",
+    "commune": 21
+  }
+}
+3. Valeurs des paramètres de recherche
+https://api.les-aides.fr/liste/
+Voici les listes des valeurs à utiliser lors des recherches. Certaines listes sont au standard des nomenclatures de l'INSEE (NAF, COG).
+3.1 Activité de l'entreprise
+3.2 Filière marché
+3.3 Région d'implantation de l'entreprise
+3.4 Département d'implantation de l'entreprise
+3.5 Commune d'implantation de l'entreprise
+3.6 Domaine d'application de l'aide
+3.7 Moyen d'intervention de l'aide
+3.1 Activité de l'entreprise
+/liste/naf
+Cette liste donne les codes à utiliser pour spécifier l'Activité Principale Exercée par l'entreprise (APE). Les données proviennent de la nomenclature de l'INSEE et sont les codes officiels de la Nomenclature d'Activités Française (NAF).
+Ce paramètre obligatoire est passé par le champ ape lors de la recherche d'aides. Cette liste est un arborescence à 5 niveaux, chaque code de chaque niveau peut être utilisé pour la recherche d'aides.
+Format de la liste
+Champs
+code : (string) Code APE
+libelle : (string) Libellé de l'activité
+activites : (array) Liste des activités du niveau suivant
+Exemple
+[
+  {
+    "code": "A",
+    "libelle": "Agriculture, sylviculture et pêche",
+    "activites": [
+      {
+        "code": "01",
+        "libelle": "Culture et production animale, chasse et services annexes",
+        "activites": [
+          {
+            "code": "011",
+            "libelle": "Cultures non permanentes",
+            "activites": [
+              {
+                "code": "0111",
+                "libelle": "Culture de céréales (à l'exception du riz), de légumineuses et de graines oléagineuses",
+                "activites": [
+                  {
+                    "code": "0111Z",
+                    "libelle": "Culture de céréales (à l'exception du riz), de légumineuses et de graines oléagineuses"
+                  }
+                ]
+              },
+              {
+              "code": "0112",
+              "libelle": "Culture du riz",
+              ...
+]
+
+3.2 Filière marché
+/liste/filieres
+Cette liste donne les numéros à utiliser pour spécifier la filière marché de l'entreprise. Ce paramètre optionnel est passé par le champ filiere.
+Format de la liste
+Champs
+numero : (integer) Numéro de filière
+libelle : (string) Libellé de la filière
+Exemple
+[
+  {
+    "numero": 336,
+    "libelle": "Artisanat"
+  },
+  {
+    "numero": 335,
+    "libelle": "Economie Sociale et Solidaire"
+  },
+  {
+    "numero": 337,
+    "libelle": "Métiers de bouche"
+  },
+  ...
+]
+
+3.3 Région d'implantation de l'entreprise
+/liste/regions
+Cette liste donne les numéros à utiliser pour spécifier la région d'implantation de l'entreprise. Ce paramètre optionnel est passé par le champ region.
+Format de la liste
+Champs
+region : (integer) Numéro de la région (INSEE)
+nom : (string) Nom de la région
+Exemple
+[
+  {
+    "region": 42,
+    "nom": "Alsace"
+  },
+  {
+    "region": 72,
+    "nom": "Aquitaine"
+  },
+  {
+    "region": 83,
+    "nom": "Auvergne"
+  }
+  ...
+]
+
+3.4 Département d'implantation de l'entreprise
+/liste/departements
+Cette liste donne les codes à utiliser pour spécifier le département d'implantation de l'entreprise. Ce paramètre optionnel est passé par le champ departement.
+Format de la liste
+Champs
+departement : (string) Code du département (INSEE)
+nom : (string) Nom du département
+Exemple
+[
+  {
+    "departement": "01",
+    "nom": "Ain"
+  },
+  {
+    "departement": "02",
+    "nom": "Aisne"
+  },
+  {
+    "departement": "03",
+    "nom": "Allier"
+  },
+  ...
+]
+
+3.5 Commune d'implantation de l'entreprise
+/liste/communes?departement=01
+Cette liste donne les codes à utiliser pour spécifier la commune d'implantation de l'entreprise. Ce paramètre optionnel est passé par le champ commune, associé au champ departement.
+La valeur du champ commune peut être soit le numéro associé au département, soit le code INSEE, auquel cas le département est optionnel.
+departement=01&commune=33
+
+commune=01033
+Format de la liste
+Champs
+departement : (string) Code du département de la commune (INSEE)
+numero : (integer) Numéro de la commune
+insee : (string) Code INSEE de la commune
+article : (string) Article éventuel précédant le nom de la commune (caractère espace compris)
+nom : (string) Nom de la commune
+Exemple
+[
+  {
+    "departement": "01",
+    "numero": 1,
+    "insee": "01001",
+    "article": "L'",
+    "nom": "Abergement-Clémenciat"
+  },
+  {
+    "departement": "01",
+    "numero": 2,
+    "insee": "01002",
+    "article": "L'",
+    "nom": "Abergement-de-Varey"
+  },
+  {
+   "departement": "01",
+   "numero": 4,
+   "insee": "01004",
+   "article": "",
+   "nom": "Ambérieu-en-Bugey"
+  }
+  ...
+]
+
+3.6 Domaine d'application de l'aide
+/liste/domaines
+Cette liste donne les numéros à utiliser pour spécifier le domaine d'application de l'aide. Ce paramètre obligatoire est passé par le champ domaine.
+Format de la liste
+Champs
+numero : (integer) Numéro du domaine
+libelle : (string) Libellé du domaine
+Exemple
+[
+  {
+    "numero": 790,
+    "libelle": "Création Reprise"
+  },
+  {
+    "numero": 793,
+    "libelle": "Cession Transmission"
+  },
+  {
+    "numero": 798,
+    "libelle": "Développement commercial"
+  },
+  ...
+]
+
+3.7 Moyen d'intervention de l'aide
+/liste/moyens
+Cette liste donne les numéros à utiliser pour spécifier le moyen d'intervention de l'aide. Ce paramètre optionnel est passé par le champ moyen.
+Format de la liste
+Champs
+numero : (integer) Numéro du moyen
+libelle : (string) Libellé du moyen
+Exemple
+[
+  {
+    "numero": 822,
+    "libelle": "Intervention en fonds propres"
+  },
+  {
+    "numero": 827,
+    "libelle": "Avance − Prêts − Garanties"
+  },
+  {
+    "numero": 833,
+    "libelle": "Subvention"
+  },
+  ...
+]
+4. Fiche d'aide
+https://api.les-aides.fr/aide/
+Chargement d'une fiche descriptive d'un dispositif d'aide suite à une recherche.
+4.1 Chargement de fiches d'aide
+Critères
+4.2 Format d'une fiche d'aide
+Succès
+Echec
+4.1 Chargement de fiches d'aide
+Lors d'une recherche aboutie, une liste de dispositifs est renvoyée. Chaque dispositif est identifié par un numéro. La requête est identifiée par le champ idr du résultat.
+Le chargement s'effectue ainsi :
+https://api.les-aides.fr/aide/?requete=123456&dispositif=23456
+
+Critères
+Variable "requete" : Identifiant de la requête.
+Ce paramètre est obligatoire.
+Cette valeur entière est fournie par le champ idr du résultat d'une recherche
+Variable "dispositif" : Identifiant du dispositif.
+Cette valeur entière est fournie par le champ numero d'un objet dispositif
+4.2 Format d'une fiche d'aide
+Succès
+En cas de succès de la demande de fiche d'aide, le serveur renvoie un objet de type ficheDispositif.
+L'objet ficheDispositif est un héritier de l'objet dispositif.
+numero : (integer) Identifiant de dispositifs. Est utilisé pour charger la fiche descriptive complète du dispositif
+nom : (string) Nom du dispositif d'aide
+sigle : (string) Sigle de l'organisme qui propose le dispositif
+revision : (double) Numéro de révision interne Sémaphore
+generation : (string) Date de création de la fiche dans Sémaphore
+validation : (string) Date de dernière validation du dispositif dans Sémaphore
+nouveau : (boolean) Vrai si le dispositif est récent
+implantation : (string) "E": Dispositif Européen, "N": Dispositif National, "T": Dispositif Territorial
+uri : (string) Lien URL vers la fiche du dispositif dans les-aides.fr
+aps : (boolean) Indique si le dispositif s'inscrit dans le projet des Aides Publiques Simplifiées
+domaines : (tableau d'integer) Liste des identifiants des domaines d'application du dispositif d'aide
+moyens : (tableau d'integer) Liste des identifiants des moyens d'intervention du dispositif d'aide
+auteur : (string) Nom du gestionnaire Sémaphore auteur de la fiche
+organisme : (objet "organisme") Organisme proposant ce dispositif d'aide
+objet : (string) Paragraphe "Présentation du dispositif" de la fiche (en HTML)
+conditions : (string) Paragraphe "Conditions d'attribution" de la fiche (en HTML)
+montants : (string) Paragraphe "Montant de l'aide" de la fiche (en HTML)
+conseils : (string) Paragraphe "Informations pratiques" de la fiche (en HTML)
+references : (string) Paragraphe "Source et références légales" de la fiche (en HTML)
+cci : (tableau d'objets "cci") Liste des CCI locales, dépends de la localisation indiquée lors de la recherche
+restrictions : (tableau de string) Liste des restrictions d'attribution de l'aide
+criteres : (objet) Liste des restrictions d'attribution de l'aide
+pour : (tableau d'objets) : Liste des critères sélectifs d'attribution de l'aide
+libelle : (string) Libellé du critère sélectif
+enfants : (tableau d'objets) Sous-critères éventuels
+contre : (tableau) : Liste des critères restrictifs d'attribution de l'aide
+libelle : (string) Libellé du critère restrictif
+enfants : (tableau d'objets) Sous-critères éventuels
+particularites : (tableau d'objets) Liste des particularités territoriales du dispositif, dépends de la localisation indiquée lors de la recherche
+titre : (tableau) : Titre de la particularité territoriale
+texte : (tableau) : Texte de la particularité territoriale (en HTML)
+conseil : (string) Paragraphe formulant des conseils ou des contact subsidiaires (en HTML)
+responsabilites : (string) Limites de responsabilité des données (en HTML)
+Objet "organisme"
+numero : (integer) Identifiant Sémaphore de l'organisme
+sigle : (string) Sigle de l'organisme
+raison_sociale : (string) Raison sociale de l'organisme
+implantation : (string) "E": Organisme Européen, "N": Organisme National, "T": Organisme Territorial
+adresses : (tableau d'objets) Coordonnées de l'orgnisme, dépendent de la localisation indiquée lors de la recherche
+libelle : (string) Libellé de l'adresse
+interlocuteur : (string) Nom de l'interlocuteur principal
+adresse : (string) Adresse postale
+email : (string) Adresse e-mail
+service : (string) Nom du service
+telephone : (string) Numéro de téléphone
+telecopie : (string) Numéro de télécopie
+web : (string) URL du site web
+Objet "cci"
+organisme : (string) Raison sociale de la CCI
+adresse : (string) Adresse postale
+telephone : (string) Numéro de téléphone
+telecopie : (string) Numéro de télécopie
+web : (string) URL du site web
+Echec
+En cas d'échec de la recherche, le serveur renvoie un code HTTP 403, et un objet JSON de ce type :
+exception : (string) Description de l'exception
+api : (string) API qui a provoqué l'exception
+action : (string) Action qui a provoqué l'exception (optionnel)
+field : (string) Champ qui a provoqué l'exception (optionnel)
+args : (objet) Arguments passés à l'API
+Exemple :
+{
+  "exception": "Ce dispositif n'est pas un résultat de cette recherche",
+  "api": "/aide",
+  "field": "dispositif",
+  "args": {
+    "requete": 3951568,
+    "dispositif": 10345
+  }
+}
+5. Exemple de clients
+Exemple d'applications clientes
+5.1 Client javaScript/jQuery
+5.2 Client/Serveur PHP
+5.1 Client javaScript/jQuery
+Tester l'exemple
+Archive des sources de l'exemple
+Cet exemple utilise la bibliothèque javaScript jQuery.
+Il est entièrement écrit en HTML et javaScript et n'utilise aucun script coté serveur. L'appel à l'API les-aides.fr se fait exclusivement en JSONP.
+$.ajax({
+  url: 'https://api.les-aides.fr/aides/', 
+  success: function(resultat) {
+    // Résultat de la requête dans resultat
+  }, 
+  data: {
+    idc: '0123456789ABCD',
+    format: 'jsonp',
+    ape: 'A',
+    domaine: 790,
+    moyen: 833,
+    departement: '75'
+  }, 
+  dataType: 'jsonp', 
+  jsonp: 'callback', 
+  cache: true
+});
+
+5.2 Client/Serveur PHP
+Tester l'exemple
+Archive des sources de l'exemple
+Cet exemple utilise un script PHP coté serveur. Ce script interroge l'API grace au module CURL.
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_POST            => true, // Méthode POST
+  CURLOPT_RETURNTRANSFER  => true, // On récupère directement les données
+  CURLOPT_FAILONERROR     => true, // Pas de données s'il y a un code d'erreur HTTP
+  CURLOPT_ENCODING        => 'gzip', // Compression gzip
+  CURLOPT_USERAGENT       => 'Mozilla/5.0 (PHP '.PHP_VERSION.') API Les-aides.fr', // Agent
+  CURLOPT_HTTPHEADER      => array(
+    'X-IDC: 0123456789ABCD',     // Votre IDC dans l'entête HTTP
+    'Accept: application/json'), // Format des données
+));
+
+curl_setopt($curl, CURLOPT_URL, 'https://api.les-aides.fr/aides/'); // URL de l'API
+curl_setopt($curl, CURLOPT_POSTFIELDS, array(  // Paramètres de la recherche
+  'ape' => 'A',
+  'domaine' => 790,
+  'moyen' => 833,
+  'departement' => '75',
+));
+
+if($resultat = curl_exec($curl)) {
+  $resultat = json_decode($resultat); // Résultat de la requête
+}
+
+Une classe a été construite pour l'exemple. Son code est adaptable pour votre application. Veillez à bien ajouter votre clef IDC dans la classe pour pouvoir l'utiliser.

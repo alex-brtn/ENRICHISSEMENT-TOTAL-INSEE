@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://ceophmrxtncdkzvladav.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlb3BobXJ4dG5jZGt6dmxhZGF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0MzU5ODksImV4cCI6MjA1OTAxMTk4OX0.b8EMfIBqDudotAr_6VirRsNqnxHCHUTH28w7Vz3Gan4",
+    "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlb3BobXJ4dG5jZGt6dmxhZGF2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzQzNTk4OSwiZXhwIjoyMDU5MDExOTg5fQ.5vxi-4cl1op6AraxTgTpJKWj9k_GZRiclscc4Cw9f4g",
+    "TYPEFORM_WEBHOOK_SECRET": "tfp_2wqhVaWE7K1zXjzDkZz1ZkMmZ9EAeVRtR4zDt7BtZwfb_44eDJg5gL4xSrN"
+  },
+  "routes": [
+    { "src": "/api/webhook", "dest": "/api/webhook", "continue": true },
+    {
+      "src": "/api/webhook",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
+    }
+  ],
+  "public": true
+}

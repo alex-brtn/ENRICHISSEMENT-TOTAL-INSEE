@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: "Voici les règles concernant le backend qu'il ne faut pas enfreindre quand tu construis "
+globs: 
+alwaysApply: true
+---
+
+## Business Rules
+
+- `nombre_employes` comes only from Typeform (not from INSEE)
+- Enrichment with INSEE is triggered automatically on row insert in `companies`
+- Claude uses the enriched company data + full grant info for scoring
+- Slack message always splits between ✅ matching / ⚠️ incertain
+
